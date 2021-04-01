@@ -1,12 +1,16 @@
+import org.apache.tools.ant.filters.*
+
 plugins {
 	id 'org.springframework.boot' version '2.4.4'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id 'application'
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
+def activeProfile = project.properties['activeProfile']?:'k8s'
 
 configurations {
 	compileOnly {
@@ -20,6 +24,7 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -27,4 +32,9 @@ dependencies {
 
 test {
 	useJUnitPlatform()
+}
+
+processResources {
+	logger.error('Got active profile [{}]', activeProfile)
+	filter ReplaceTokens, tokens: [activeProfile: activeProfile] //gradle clean build -PactiveProfile=local or ?:'k8s'
 }
