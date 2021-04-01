@@ -3,8 +3,7 @@ import org.apache.tools.ant.filters.*
 plugins {
 	id 'org.springframework.boot' version '2.4.4'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'java'
-	id 'application'
+	id 'application' //plugins the lifecycle task (application include id 'java')
 }
 
 group = 'com.example'
@@ -24,7 +23,7 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis' //SpringBoot to Redis:(1)build.gradle (2)RedisCtrl
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -36,5 +35,8 @@ test {
 
 processResources {
 	logger.error('Got active profile [{}]', activeProfile)
-	filter ReplaceTokens, tokens: [activeProfile: activeProfile] //gradle clean build -PactiveProfile=local or ?:'k8s'
+	filter ReplaceTokens, tokens: [activeProfile: activeProfile]
+	//2. application.properties: src>main>resources>spring.profiles.active=@activeProfile@
+	//(1)gradle clean build -PactiveProfile=local or ?:'k8s'
+	//(2)build>resources>main>application.properties; Content will change =>spring.profiles.active=local or k8s
 }
