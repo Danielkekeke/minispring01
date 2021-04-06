@@ -38,7 +38,9 @@ processResources {
 	filter ReplaceTokens, tokens: [activeProfile: activeProfile]
 	//2. Gradle build: application.properties: local or k8s
 	//(1)src>main>resources>application.properties => Line1: spring.profiles.active=@activeProfile@
-	//(2)build.gradle => Add Code: def activeProfile = project.properties['activeProfile']?:'k8s' <=(default = k8s)
+	//(2)build.gradle => Add Code:
+    //   (a) def activeProfile = project.properties['activeProfile']?:'k8s' //default = k8s
+    //   (b) processResources { filter ReplaceTokens, tokens: [activeProfile: activeProfile] }
 	//(3)gradle clean build -PactiveProfile=local or k8s
 	//(4)build>resources>main>application.properties => Line1: spring.profiles.active=local or k8s
 }
